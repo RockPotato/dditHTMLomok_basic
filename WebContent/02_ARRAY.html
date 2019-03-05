@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script type="text/javascript">
+	function test() {
+		var arr = new Array();
+		
+		arr.push("1");
+		arr.push("2");
+		var arrNew = new Array();
+		
+		arrNew.push("1");
+		arrNew.push("2");
+		arr.push("3");
+		arr.push("4");
+		var cur=0;
+		for (var i = 0; i < arr.length-1; i++) {
+			if(arr[i]<arr[i+1]){
+				cur=arr[i+1];
+			}
+		}
+		console.log(cur);
+	}
+</script>
+</head>
+<body>
+<a href="javascript:test()">ha</a>
+</body>
+</html>

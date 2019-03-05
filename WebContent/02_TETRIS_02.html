@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>TETRIS</title>
+
+	<script>
+		var arr2d_disp = new Array();
+		var arr2d_stack = new Array();
+		var arr2d_block = new Array();
+		var canvas;
+		var ctx;
+		window.onload = function() {
+			init_arr();
+			canvas = document.getElementById("canvas");
+			if (canvas == null || canvas.getContext == null) return;
+			ctx = canvas.getContext("2d");
+			draw();
+		}
+		
+		function init_arr(){
+			for (var i = 0; i < 20; i++) {
+				var row_block = new Array();
+				var row_stack = new Array();
+				var row_disp = new Array();
+				for (var j = 0; j < 10; j++) {
+					row_block.push(0);
+					row_stack.push(0);
+					row_disp.push(0);
+				}
+				arr2d_block.push(row_block);
+				arr2d_stack.push(row_stack);
+				arr2d_disp.push(row_disp);
+			}
+			for (var i = 0; i < arr2d_stack[arr2d_stack.length-1].length-2; i++) {
+				arr2d_stack[arr2d_stack.length-1][i] = 3;
+			}
+			
+			console.log(arr2d_block);
+			console.log(arr2d_stack);
+			console.log(arr2d_disp);
+		}
+		var block_type	= 7;
+		var block_status= 1;
+		var block_i		= 0;
+		var block_j		= 4;
+		
+		
+		var colors = ["gray","yellow","red","blue","purple","skyblue","pink","orange"];
+		function draw() {
+			for (var i = 0; i < arr2d_disp.length; i++) {
+				for (var j = 0; j < arr2d_disp[i].length; j++) {
+					var index_color = arr2d_disp[i][j];
+					ctx.fillStyle = colors[index_color];
+					ctx.fillRect((j*20), i*20, 19, 19);
+				}
+			}
+		}
+		function fn_keyboard(e){
+			var keycode = e.keyCode;
+			if(keycode == 40){
+				// down
+				block_i++;
+			}
+			if(keycode == 37){
+				// left
+				block_j--;
+			}
+			if(keycode == 39){
+				// right
+				block_j++;
+			}
+			if(keycode == 38){
+				changeStatus();
+			}
+			setBlock();
+			setDispl();
+			
+			draw();
+			console.log(arr2d_stack);
+			console.log(arr2d_disp);
+			// 38 위 32 스페이스
+			// 40 아래 37 왼 39 오른 
+		}
+		
+		function changeStatus(){
+			if(block_type == 2 ||
+					block_type == 3 ||
+					block_type == 4
+					){
+				if(block_status == 1){
+					block_status = 2;
+				}
+				else if(block_status == 2){
+					block_status = 1;
+				}
+			}
+			if(block_type == 5 ||
+					block_type == 6||
+						block_type == 7
+					){
+				if(block_status == 1){
+					block_status = 2;
+				}
+				else if(block_status == 2){
+					block_status = 3;
+				}
+				else if(block_status == 3){
+					block_status = 4;
+				}
+				else if(block_status == 4){
+					block_status = 1;
+				}
+			}
+		}
+		function setBlock(){
+			setZero(arr2d_block);
+			if(block_type == 1){
+				arr2d_block[block_i		][block_j	] = block_type;	
+				arr2d_block[block_i+1	][block_j	] = block_type;	
+				arr2d_block[block_i		][block_j+1	] = block_type;	
+				arr2d_block[block_i+1	][block_j+1	] = block_type;	
+			}
+			
+			if(block_type == 2){
+				if(block_status==1){
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i-2	][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j-2	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					
+				}
+			}
+			
+			if(block_type == 3){
+				if(block_status==1){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					arr2d_block[block_i+1	][block_j+1	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					arr2d_block[block_i+1	][block_j-1	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+			}
+			
+			if(block_type == 4){
+				if(block_status==1){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i+1	][block_j-1	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j+1	] = block_type;	
+				}
+			}
+			
+			if(block_type == 5){
+				if(block_status==1){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+				if(block_status==3){
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;		
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+				if(block_status==4){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;
+				}
+			}
+			
+			if(block_type == 6){
+				if(block_status==1){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i-1	][block_j+1	] = block_type;
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					arr2d_block[block_i+1	][block_j+1	] = block_type;	
+				}
+				if(block_status==3){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;		
+					arr2d_block[block_i+1	][block_j-1	] = block_type;	
+				}
+				if(block_status==4){
+					arr2d_block[block_i-1	][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;
+				}
+			}
+			
+			if(block_type == 7){
+				if(block_status==1){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i-1	][block_j-1	] = block_type;
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;	
+				}
+				if(block_status==2){
+					arr2d_block[block_i-1	][block_j+1	] = block_type;	
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+				}
+				if(block_status==3){
+					arr2d_block[block_i-1	][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i+1	][block_j	] = block_type;		
+					arr2d_block[block_i+1	][block_j+1	] = block_type;	
+				}
+				if(block_status==4){
+					arr2d_block[block_i		][block_j-1	] = block_type;	
+					arr2d_block[block_i		][block_j	] = block_type;	
+					arr2d_block[block_i		][block_j+1	] = block_type;	
+					arr2d_block[block_i+1	][block_j-1	] = block_type;	
+				}
+			}
+		}
+		function setDispl(){
+			setZero(arr2d_disp);
+			for (var i = 0; i < arr2d_disp.length; i++) {
+				for (var j = 0; j < arr2d_disp[i].length; j++) {
+					if(arr2d_block[i][j] != 0){
+						arr2d_disp[i][j] = arr2d_block[i][j];
+					}
+					if(arr2d_stack[i][j] != 0){
+						arr2d_disp[i][j] = arr2d_stack[i][j];
+					}
+				}
+			}
+			
+		}
+		function setZero(arr2d){
+			for (var i = 0; i < arr2d.length; i++) {
+				for (var j = 0; j < arr2d[i].length; j++) {
+					arr2d[i][j] = 0;
+				}
+			}
+		}
+	</script>
+
+</head>
+<body onkeydown="fn_keyboard(event)">
+	<canvas id="canvas" width="400" height="700" >
+		이 브라우저는 캔버스를 지원하지 않습니다.
+	</canvas>
+</body>
+</html>

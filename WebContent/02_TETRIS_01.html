@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>TETRIS</title>
+
+	<script>
+		var arr2d_disp = new Array();
+		var arr2d_stack = new Array();
+		var arr2d_block = new Array();
+		var canvas;
+		var ctx;
+		window.onload = function() {
+			init_arr();
+			canvas = document.getElementById("canvas");
+			if (canvas == null || canvas.getContext == null) return;
+			ctx = canvas.getContext("2d");
+			draw();
+		}
+		
+		function init_arr(){
+			for (var i = 0; i < 20; i++) {
+				var row_block = new Array();
+				var row_stack = new Array();
+				var row_disp = new Array();
+				for (var j = 0; j < 10; j++) {
+					row_block.push(0);
+					row_stack.push(0);
+					row_disp.push(0);
+				}
+				arr2d_block.push(row_block);
+				arr2d_stack.push(row_stack);
+				arr2d_disp.push(row_disp);
+			}
+			arr2d_disp[7][7]=1;
+			arr2d_disp[8][4]=4;
+			console.log(arr2d_block);
+			console.log(arr2d_stack);
+			console.log(arr2d_disp);
+		}
+		
+		
+		var colors = ["gray","yellow","red","blue","purple","olive","pink","orange"];
+		function draw() {
+			for (var i = 0; i < arr2d_disp.length; i++) {
+				for (var j = 0; j < arr2d_disp[i].length; j++) {
+					var index_color=arr2d_disp[i][j];
+					ctx.fillStyle=colors[index_color];
+					ctx.fillRect((j*20), i*20, 19, 19);
+				}
+			}
+		}
+	</script>
+
+</head>
+<body>
+	<canvas id="canvas" width="400" height="700" >
+		이 브라우저는 캔버스를 지원하지 않습니다.
+	</canvas>
+</body>
+</html>
